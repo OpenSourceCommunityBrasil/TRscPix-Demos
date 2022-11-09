@@ -1,8 +1,9 @@
 program DemoTRscPixVCL;
 uses
   Vcl.Forms,
-  uFrmMain in '..\View\uFrmMain.pas' {FrmMain},
-  uRsc.funcoes in '..\Extra\uRsc.funcoes.pas';
+  uFrmMain in 'View\uFrmMain.pas' {FrmMain},
+  DelphiZXIngQRCode in '..\..\Extra\DelphiZXIngQRCode.pas',
+  uRsc.Vcl.funcoes in '..\..\Extra\uRsc.Vcl.funcoes.pas';
 
 {$R *.res}
 begin

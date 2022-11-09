@@ -25,22 +25,29 @@
 { license Apache-2.0                    }
 {                                       }
 {=======================================}
-unit uRsc.funcoes;
+unit uRsc.Vcl.funcoes;
 interface
   uses
-    Vcl.Graphics
-    ,DelphiZXingQRCode
-    ,uniImage
+    System.SysUtils
+    ,System.Math
+    ,System.UITypes
+    ,System.NetEncoding
+    ,System.Classes
+    ,IdHashMessageDigest
+    ,Vcl.ExtCtrls
+    ,Vcl.Graphics
+
+    ,DelphiZXingQRCode, System.DateUtils
+    ,Winapi.Windows
     ;
 
 
-  procedure QRCodeWin(imgQRCode: TUniImage; texto: string); overload;
-
+  procedure QRCodeWin(imgQRCode: TImage; texto: string); overload;
 
 implementation
 
 
-procedure QRCodeWin(imgQRCode: TUniImage; texto: string);
+procedure QRCodeWin(imgQRCode: TImage; texto: string);
 var
   QRCode: TDelphiZXingQRCode;
   Row, Column: Integer;

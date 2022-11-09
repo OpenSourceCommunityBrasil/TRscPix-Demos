@@ -22,22 +22,51 @@
 unit uFrmMain;
 interface
 uses
-  Winapi.Windows, Winapi.ShellAPI, Winapi.Messages, System.SysUtils, System.StrUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.Buttons, Vcl.Samples.Spin, System.TypInfo,
-  IniFiles,  System.UITypes, System.DateUtils,
+
+  Data.DB,
+  FireDAC.Comp.Client,
+  FireDAC.Comp.DataSet,
+  FireDAC.DApt.Intf,
+  FireDAC.DatS,
+  FireDAC.Phys.Intf,
+  FireDAC.Stan.Error,
+  FireDAC.Stan.Intf,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Param,
   IdSSLOpenSSL,
-  uRscPix.Variaveis, uRscPix.Tipos,
-  uRscPix.Validations, Data.DB, Vcl.Grids,
-  Vcl.DBGrids, Vcl.Imaging.pngimage,
-  uRscPix.Classes,
+  IniFiles,
+  System.Classes,
+  System.DateUtils,
+  System.SysUtils,
+  System.TypInfo,
+  System.UITypes,
+  System.Variants,
+  Vcl.Buttons,
   Vcl.ComCtrls,
+  Vcl.Controls,
+  Vcl.Dialogs,
+  Vcl.ExtCtrls,
+  Vcl.Forms,
+  Vcl.Graphics,
+  Vcl.Grids,
+  Vcl.Imaging.pngimage,
+  Vcl.Samples.Spin,
+  Vcl.StdCtrls,
+  Winapi.Messages,
+  Winapi.ShellAPI,
+  Winapi.Windows
 
 
-  RscPix, uRsc.funcoes,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Mask
+
+  , RscPix
+  , uRsc.Vcl.funcoes
+  , uRscPix.Variaveis
+  , uRscPix.Tipos
+  , uRscPix.Validations
+  , uRscPix.Classes, Vcl.DBGrids, Vcl.Mask
+
+
+
 
   ;
 type
@@ -82,14 +111,8 @@ type
     edtCidadeRecebedor: TLabeledEdit;
     btn_Cert: TSpeedButton;
     Open_Dialog: TOpenDialog;
-    pnl_tela: TPanel;
     pnl_menu: TPanel;
-    pnl_Configs: TPanel;
-    pnl_Funcoes: TPanel;
-    PnlBtn_Funcoes: TPanel;
-    PnlBtn_Configs: TPanel;
     pnl_FuncCobranca: TPanel;
-    GroupBox1: TGroupBox;
     Panel2: TPanel;
     Panel3: TPanel;
     Panel4: TPanel;
@@ -118,7 +141,6 @@ type
     Label16: TLabel;
     Label17: TLabel;
     edt_e2eid: TEdit;
-    RscPix1: TRscPix;
     DBGrid1: TDBGrid;
     DataSource1: TDataSource;
     FDMemTable1: TFDMemTable;
@@ -151,6 +173,22 @@ type
     Image1: TImage;
     Image2: TImage;
     lblVersaoComponente: TLabel;
+    lblPsp: TLabel;
+    PageControl1: TPageControl;
+    tbs_Configuracoes: TTabSheet;
+    tbs_Cob: TTabSheet;
+    tbs_Pix: TTabSheet;
+    Panel13: TPanel;
+    SpeedButton3: TSpeedButton;
+    SpeedButton4: TSpeedButton;
+    Label7: TLabel;
+    lbl_Ambiente: TLabel;
+    Label25: TLabel;
+    GroupBox5: TGroupBox;
+    GroupBox6: TGroupBox;
+    tbsQrcodeEstatico: TTabSheet;
+    SpeedButton5: TSpeedButton;
+    RscPix1: TRscPix;
     procedure btn_GerarCabrancaClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
@@ -169,8 +207,6 @@ type
     { funções espeficaic}
     procedure PnlsBtnMouseLeave(Sender: TObject);
     procedure PnlsBtnMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure PnlBtn_ConfigsClick(Sender: TObject);
-    procedure PnlBtn_FuncoesClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure btnImprQrCodeClick(Sender: TObject);
     procedure RscPix1CobGet(Sender: TObject; const RespCobGet: TRespCobGet;
@@ -191,14 +227,19 @@ type
       Erro: string);
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
+    procedure CbbPSPChange(Sender: TObject);
+    procedure SpeedButton3Click(Sender: TObject);
+    procedure SpeedButton4Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure PageControl1Change(Sender: TObject);
+    procedure CbbTipoAmbienteChange(Sender: TObject);
+    procedure SpeedButton5Click(Sender: TObject);
   private
     cQrCode,
     cFantasia  : String;
     PathLogo: string;
     CurrentPsp:  TTipoPSP;
 
-    procedure SetResetConfigPnlBtn(Sender: TObject);
-    procedure SetConfigClick(Sender: TObject);
     procedure SetConfigTelaFunções;
     { Private declarations }
     procedure SetConfigPixObrig(Sender: TObject);
@@ -211,25 +252,29 @@ var
   FrmMain: TFrmMain;
   PathConfigIni : String;
 implementation
+
 {$R *.dfm}
+
 function Selecionar_Diretorio( Titulo : String ; var Dir : String ) : Boolean ;
 begin
-result := False ;
-with TFileOpenDialog.Create(nil) do
-     try
-       Title := Titulo ;
-       Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem] ;
-       OkButtonLabel := 'Selecionar';
-       DefaultFolder := Dir;
-       FileName := Dir;
-       if Execute then
-          begin
-          Dir := FileName ;
-          result := True ;
-          end;
-     finally
-       Free;
-     end;
+  result := False ;
+  with TFileOpenDialog.Create(nil) do
+    begin
+       try
+         Title := Titulo ;
+         Options := [fdoPickFolders, fdoPathMustExist, fdoForceFileSystem] ;
+         OkButtonLabel := 'Selecionar';
+         DefaultFolder := Dir;
+         FileName := Dir;
+         if Execute then
+            begin
+            Dir := FileName ;
+            result := True ;
+            end;
+       finally
+         Free;
+       end;
+    end;
 end;
 
 procedure TFrmMain.BitBtn1Click(Sender: TObject);
@@ -287,16 +332,19 @@ begin
       edtSenhaCertificado.Text := Open_Dialog.FileName ;
      end;
 end;
+
 procedure TFrmMain.Button2Click(Sender: TObject);
 begin
-    SetConfigPixObrig(RscPix1);
-    RscPix1.ConsultarCobranca(edtTXID.Text);
+  SetConfigPixObrig(RscPix1);
+  RscPix1.ConsultarCobranca(edtTXID.Text);
 end;
+
 procedure TFrmMain.Button3Click(Sender: TObject);
 begin
-    SetConfigPixObrig(RscPix1);
-    RscPix1.CancelarCobranca(edtTXID.Text);
+  SetConfigPixObrig(RscPix1);
+  RscPix1.CancelarCobranca(edtTXID.Text);
 end;
+
 procedure TFrmMain.Button4Click(Sender: TObject);
 begin
   if Trim(edt_E2eID.Text) = ''  then
@@ -321,13 +369,13 @@ begin
   RscPix1.SolicitarDevolucaoPix(edt_e2eid.Text, edtTxIdDev.Text, StrToFloat(edtValorPix.Text));
 end;
 
-
 procedure TFrmMain.Button5Click(Sender: TObject);
 begin
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarListPixsRecebPeriodo(StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)) ,
                                         StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)), StrToIntDef(edt_PagPixs.Text, 0));
 end;
+
 procedure TFrmMain.Button6Click(Sender: TObject);
 var
   valida: Boolean;
@@ -354,6 +402,7 @@ begin
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarPixRecebido(edt_e2eid.Text);
 end;
+
 procedure TFrmMain.Button7Click(Sender: TObject);
 begin
   if Trim(edt_E2eID.Text) = ''  then
@@ -371,28 +420,7 @@ begin
   SetConfigPixObrig(RscPix1);
   RscPix1.ConsultarDevolucaoPix(edt_e2eid.Text, edtTxIdDev.Text);
 end;
-procedure TFrmMain.SetResetConfigPnlBtn(Sender: TObject);
-var
-  P:  integer;
-begin
-  if Sender is TPanel then
-    begin
-      for P := 0 to Pred(TPanel(Sender).ControlCount) do
-        begin
-          if TPanel(Sender).Controls[P] is TPanel then
-            begin
-              TPanel(TPanel(Sender).Controls[P]).Tag    :=  0;
-              TPanel(TPanel(Sender).Controls[P]).Color  :=  clMenuHighlight;
-            end;
-        end;
-    end;
 
-//  PnlBtn_Configs.Tag    :=  0;
-//  PnlBtn_Configs.Color  :=  clMenuHighlight;
-//
-//  PnlBtn_Funcoes.Tag    :=  0;
-//  PnlBtn_Funcoes.Color  :=  clMenuHighlight
-end;
 function TFrmMain.SoNumOnKeyPress(var Key: Char): Char;
 begin
   {$IFDEF UNICODE}
@@ -415,6 +443,7 @@ begin
                   + IntToStr(Random(9999))
                   + 'EZL1991';
 end;
+
 procedure TFrmMain.SpeedButton2Click(Sender: TObject);
 begin
   edtTxIdDev.Text  :=  'DEV'
@@ -426,10 +455,19 @@ begin
                   + 'EZL1991';
 end;
 
-Procedure TFrmMain.SetConfigClick(Sender: TObject);
+procedure TFrmMain.SpeedButton3Click(Sender: TObject);
 begin
-  TPanel(Sender).Color := clNavy;
-  TPanel(Sender).Tag := 1;
+  PageControl1.ActivePage :=  tbs_Configuracoes;
+end;
+
+procedure TFrmMain.SpeedButton4Click(Sender: TObject);
+begin
+  PageControl1.ActivePage :=  tbs_Cob;
+end;
+
+procedure TFrmMain.SpeedButton5Click(Sender: TObject);
+begin
+  PageControl1.ActivePage :=  tbsQrcodeEstatico;
 end;
 
 procedure TFrmMain.SetConfigPixObrig(Sender: TObject);
@@ -439,6 +477,10 @@ begin
   if FileExists(PathLogo) then
     imgQRCODE.Picture.LoadFromFile(PathLogo);
 
+    TRscPix(Sender).TitularPix.TipoChavePix                 :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
+    TRscPix(Sender).TitularPix.ChavePIX                     :=  edtChavePix.Text;
+    TRscPix(Sender).TitularPix.TipoQRCode                   :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+    TRscPix(Sender).TitularPix.DuracaoMinutos               :=  edtDuracaoMinutos.Value;
     TRscPix(Sender).TitularPix.NomeTitularConta             :=  edtNomeRecebedore.Text;
     TRscPix(Sender).TitularPix.CidadeTitularConta           :=  edtCidadeRecebedor.Text;
     TRscPix(Sender).Seguranca.CertFile                      :=  edtCertificado.Text;
@@ -452,15 +494,15 @@ begin
     TRscPix(Sender).Developer.Client_Secret                 :=  edtClientSecreat.Text;
     TRscPix(Sender).PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
     TRscPix(Sender).PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
-    TRscPix(Sender).TitularPix.TipoChavePix                 :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
-    TRscPix(Sender).TitularPix.ChavePIX                     :=  edtChavePix.Text;
-    TRscPix(Sender).TitularPix.TipoQRCode                   :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
-    TRscPix(Sender).TitularPix.DuracaoMinutos               :=  edtDuracaoMinutos.Value;
+
 end;
 
 procedure TFrmMain.SetConfigTelaFunções;
 begin
   CurrentPsp := TTipoPSP(GetEnumValue(TypeInfo(TTipoPSP), CbbPSP.Items[CbbPSP.ItemIndex]));
+
+  lblPsp.Caption        :=  CbbPSP.Items[CbbPSP.ItemIndex];
+  lbl_Ambiente.Caption  :=  CbbTipoAmbiente.Items[CbbTipoAmbiente.ItemIndex];
 
   case CurrentPsp of
     pspSicredi:
@@ -500,6 +542,16 @@ begin
   end;
 end;
 
+procedure TFrmMain.CbbPSPChange(Sender: TObject);
+begin
+  lblPsp.Caption  :=  CbbPSP.Items[CbbPSP.ItemIndex];
+end;
+
+procedure TFrmMain.CbbTipoAmbienteChange(Sender: TObject);
+begin
+  lbl_Ambiente.Caption  :=  CbbTipoAmbiente.Items[CbbTipoAmbiente.ItemIndex];
+end;
+
 procedure TFrmMain.CriarConfigIni;
 var
   ConfigIni : TIniFile;
@@ -537,6 +589,7 @@ begin
     end;
   end;
 end;
+
 procedure TFrmMain.edt_PagPixsKeyPress(Sender: TObject; var Key: Char);
 begin
   Key :=  SoNumOnKeyPress(Key);
@@ -595,7 +648,6 @@ begin
     CbbTipoAmbiente.ItemIndex :=  0;
 
   LerConfigIni ;
-  PnlBtn_ConfigsClick(PnlBtn_Configs);
   DBGrid1.Left  :=  306;
   DBGrid1.Top   :=  47;
   DBGrid1.Height:=  320;
@@ -606,6 +658,19 @@ begin
   dtp_Hora_Final.Time   :=  IncHour(Now, 1);
 
 end;
+
+procedure TFrmMain.FormShow(Sender: TObject);
+var
+  P:  integer;
+begin
+  for P := 0 to Pred(PageControl1.PageCount) do
+    begin
+      PageControl1.Pages[P].TabVisible :=  False;
+    end;
+
+  PageControl1.ActivePage :=  tbs_Configuracoes;
+end;
+
 procedure TFrmMain.GravarConfigIni;
 var
   ConfigIni : TIniFile;
@@ -634,6 +699,7 @@ begin
     end;
   end;
 end;
+
 procedure TFrmMain.Image1Click(Sender: TObject);
 begin
   ShellExecute(Handle,
@@ -674,6 +740,9 @@ begin
       edtNomeRecebedore.Text    :=  ConfigIni.ReadString('PIX', 'Nome Recebedor', 'Marcelo Ferreira');
       CbbPSP.ItemIndex          :=  ConfigIni.ReadInteger('PIX', 'PSP', 0);
       CbbTipoAmbiente.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Ambiente', 0);
+
+      lblPsp.Caption        :=  CbbPSP.Items[CbbPSP.ItemIndex];
+      lbl_Ambiente.Caption  :=  CbbTipoAmbiente.Items[CbbTipoAmbiente.ItemIndex];
     finally
       ConfigIni.Free;
     end;
@@ -691,23 +760,11 @@ begin
   Label15.Caption :=  'Valor Retornado: ';
 end;
 
-procedure TFrmMain.PnlBtn_ConfigsClick(Sender: TObject);
+procedure TFrmMain.PageControl1Change(Sender: TObject);
 begin
-  DBGrid1.Visible :=  False;
-  pnl_Configs.BringToFront;
-  SetResetConfigPnlBtn(pnl_menu);
-  SetConfigClick(Sender);
-end;
-procedure TFrmMain.PnlBtn_FuncoesClick(Sender: TObject);
-begin
-  DBGrid1.Visible :=  False;
-  pnl_Funcoes.BringToFront;
-  SetResetConfigPnlBtn(pnl_menu);
-  SetConfigClick(Sender);
-
   SetConfigTelaFunções;
-
 end;
+
 procedure TFrmMain.PnlsBtnMouseLeave(Sender: TObject);
 begin
   if TPanel(Sender).Tag = 0 then
@@ -715,6 +772,7 @@ begin
   else
     TPanel(Sender).Color  :=  clNavy;
 end;
+
 procedure TFrmMain.PnlsBtnMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
@@ -765,7 +823,7 @@ begin
               Label15.Caption := 'Valor Pago: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
             end;
 
-            edtValorPix.Text      :=  ReplaceStr(RespCobGet.valor.original, '.', ',');
+//            edtValorPix.Text      :=  StringReplace(RespCobGet.valor.original, '.', ',');
             edtMsgPix.Text        :=  RespCobGet.solicitacaopagador;
 
 
@@ -802,6 +860,7 @@ begin
       MessageDlg('Erro ao Consultar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
+
 procedure TFrmMain.RscPix1CobPatch(Sender: TObject;
   const RespCobPatch: TRespCobPatch; Erro: string);
 begin
@@ -816,6 +875,7 @@ begin
       MessageDlg('Erro ao Revisar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
+
 procedure TFrmMain.RscPix1CobPut(Sender: TObject; const RespCobPut: TRespCobPut;
   Erro: string);
 var
@@ -864,6 +924,7 @@ begin
       MessageDlg('Erro ao Criar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
+
 procedure TFrmMain.RscPix1LocGet(Sender: TObject; const RespLocGet: TRespLocGet;
   Erro: string);
 begin
@@ -985,6 +1046,7 @@ begin
       MessageDlg('Erro ao Consultar PIX' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
+
 procedure TFrmMain.RscPix1PixPut(Sender: TObject; const RespPixPut: TRespPixPut;
   Erro: string);
 begin
@@ -1010,6 +1072,7 @@ begin
         end;
     end;
 end;
+
 procedure TFrmMain.RscPix1Token(Sender: TObject; const Token: TToken;
   Erro: string);
 begin
@@ -1020,4 +1083,5 @@ begin
       MessageDlg('Erro ao Obter Token!' +  #13 +Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
+
 end.
