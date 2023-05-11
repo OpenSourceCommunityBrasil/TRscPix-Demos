@@ -14,25 +14,7 @@ object FrmMain: TFrmMain
   Position = poScreenCenter
   OnCreate = FormCreate
   OnShow = FormShow
-  DesignSize = (
-    1012
-    605)
   TextHeight = 13
-  object DBGrid1: TDBGrid
-    Left = 424
-    Top = 47
-    Width = 89
-    Height = 36
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    DataSource = DataSource1
-    TabOrder = 0
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -11
-    TitleFont.Name = 'Tahoma'
-    TitleFont.Style = []
-    Visible = False
-  end
   object pnl_menu: TPanel
     Left = 0
     Top = 0
@@ -46,7 +28,7 @@ object FrmMain: TFrmMain
     Padding.Right = 2
     Padding.Bottom = 2
     ParentBackground = False
-    TabOrder = 1
+    TabOrder = 0
     object Image1: TImage
       AlignWithMargins = True
       Left = 976
@@ -528,7 +510,7 @@ object FrmMain: TFrmMain
       Left = 721
       Top = 5
       Width = 205
-      Height = 19
+      Height = 31
       Margins.Right = 10
       Align = alRight
       Caption = 'Vers'#227'o Componente: 0.0.0.0'
@@ -539,13 +521,14 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 19
     end
     object lblPsp: TLabel
       AlignWithMargins = True
       Left = 49
       Top = 5
       Width = 38
-      Height = 19
+      Height = 31
       Align = alLeft
       Caption = 'PSP: '
       Font.Charset = DEFAULT_CHARSET
@@ -555,13 +538,14 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 19
     end
     object Label7: TLabel
       AlignWithMargins = True
       Left = 5
       Top = 5
       Width = 38
-      Height = 19
+      Height = 31
       Align = alLeft
       Caption = 'PSP: '
       Font.Charset = DEFAULT_CHARSET
@@ -571,13 +555,14 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 19
     end
     object lbl_Ambiente: TLabel
       AlignWithMargins = True
       Left = 195
       Top = 5
       Width = 38
-      Height = 19
+      Height = 31
       Align = alLeft
       Caption = 'PSP: '
       Font.Charset = DEFAULT_CHARSET
@@ -587,13 +572,14 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 19
     end
     object Label25: TLabel
       AlignWithMargins = True
       Left = 110
       Top = 5
       Width = 79
-      Height = 19
+      Height = 31
       Margins.Left = 20
       Align = alLeft
       Caption = 'Ambiente: '
@@ -604,6 +590,7 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 19
     end
   end
   object PageControl1: TPageControl
@@ -611,10 +598,10 @@ object FrmMain: TFrmMain
     Top = 100
     Width = 1012
     Height = 505
-    ActivePage = tbs_Configuracoes
+    ActivePage = tbs_Pix
     Align = alClient
     Style = tsFlatButtons
-    TabOrder = 2
+    TabOrder = 1
     OnChange = PageControl1Change
     object tbs_Configuracoes: TTabSheet
       Caption = 'tbs_Configuracoes'
@@ -943,7 +930,7 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 3
               Top = 0
-              Width = 65
+              Width = 156
               Height = 13
               Margins.Top = 0
               Align = alTop
@@ -954,6 +941,7 @@ object FrmMain: TFrmMain
               Font.Name = 'MS Sans Serif'
               Font.Style = []
               ParentFont = False
+              ExplicitWidth = 65
             end
             object cbbTipoQRCode: TComboBox
               AlignWithMargins = True
@@ -979,12 +967,13 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 3
               Top = 0
-              Width = 67
+              Width = 138
               Height = 13
               Margins.Top = 0
               Align = alTop
               Caption = 'Tempo Minuto'
               Transparent = True
+              ExplicitWidth = 67
             end
             object edtDuracaoMinutos: TSpinEdit
               AlignWithMargins = True
@@ -1038,7 +1027,7 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 8
               Top = 15
-              Width = 142
+              Width = 284
               Height = 13
               Margins.Left = 6
               Margins.Top = 0
@@ -1046,12 +1035,13 @@ object FrmMain: TFrmMain
               Margins.Bottom = 0
               Align = alTop
               Caption = 'TXID (De 26 a 35 Caracteres)'
+              ExplicitWidth = 142
             end
             object Label10: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 55
-              Width = 24
+              Width = 284
               Height = 13
               Margins.Left = 6
               Margins.Top = 0
@@ -1059,18 +1049,20 @@ object FrmMain: TFrmMain
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Valor'
+              ExplicitWidth = 24
             end
             object Label11: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 92
-              Width = 51
+              Width = 284
               Height = 13
               Margins.Left = 6
               Margins.Right = 6
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Mensagem'
+              ExplicitWidth = 51
             end
             object Panel6: TPanel
               AlignWithMargins = True
@@ -1141,19 +1133,20 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 8
               Top = 52
-              Width = 48
+              Width = 284
               Height = 13
               Margins.Left = 6
               Margins.Right = 6
               Margins.Bottom = 0
               Align = alTop
               Caption = 'CPF/CNPJ'
+              ExplicitWidth = 48
             end
             object Label19: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 15
-              Width = 70
+              Width = 284
               Height = 13
               Margins.Left = 6
               Margins.Top = 0
@@ -1161,18 +1154,20 @@ object FrmMain: TFrmMain
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Nome Pagador'
+              ExplicitWidth = 70
             end
             object Label20: TLabel
               AlignWithMargins = True
               Left = 8
               Top = 89
-              Width = 94
+              Width = 284
               Height = 13
               Margins.Left = 6
               Margins.Right = 6
               Margins.Bottom = 0
               Align = alTop
               Caption = 'Mensagem Pagador'
+              ExplicitWidth = 94
             end
             object edt_DocPagador: TEdit
               AlignWithMargins = True
@@ -1283,7 +1278,7 @@ object FrmMain: TFrmMain
               AlignWithMargins = True
               Left = 3
               Top = 379
-              Width = 41
+              Width = 398
               Height = 16
               Margins.Top = 10
               Align = alBottom
@@ -1295,12 +1290,13 @@ object FrmMain: TFrmMain
               Font.Style = []
               ParentFont = False
               WordWrap = True
+              ExplicitWidth = 41
             end
             object Label15: TLabel
               AlignWithMargins = True
               Left = 3
               Top = 408
-              Width = 102
+              Width = 398
               Height = 16
               Margins.Top = 10
               Align = alBottom
@@ -1312,6 +1308,7 @@ object FrmMain: TFrmMain
               Font.Style = []
               ParentFont = False
               WordWrap = True
+              ExplicitWidth = 102
             end
             object Panel7: TPanel
               Left = 0
@@ -1328,12 +1325,13 @@ object FrmMain: TFrmMain
                 AlignWithMargins = True
                 Left = 10
                 Top = 3
-                Width = 109
+                Width = 384
                 Height = 13
                 Margins.Left = 0
                 Margins.Right = 0
                 Align = alTop
                 Caption = 'Copiar e Colar Payload'
+                ExplicitWidth = 109
               end
               object mmPayload: TMemo
                 Left = 10
@@ -1369,7 +1367,7 @@ object FrmMain: TFrmMain
                 AlignWithMargins = True
                 Left = 5
                 Top = 3
-                Width = 54
+                Width = 399
                 Height = 19
                 Margins.Left = 5
                 Margins.Right = 0
@@ -1381,6 +1379,7 @@ object FrmMain: TFrmMain
                 Font.Name = 'Tahoma'
                 Font.Style = []
                 ParentFont = False
+                ExplicitWidth = 54
               end
               object imgQRCODE: TImage
                 AlignWithMargins = True
@@ -1998,23 +1997,25 @@ object FrmMain: TFrmMain
                 AlignWithMargins = True
                 Left = 8
                 Top = 89
-                Width = 41
+                Width = 284
                 Height = 13
                 Margins.Left = 6
                 Margins.Right = 6
                 Align = alTop
                 Caption = 'TxIdDev'
+                ExplicitWidth = 41
               end
               object Label17: TLabel
                 AlignWithMargins = True
                 Left = 8
                 Top = 18
-                Width = 58
+                Width = 284
                 Height = 13
                 Margins.Left = 6
                 Margins.Right = 6
                 Align = alTop
                 Caption = 'endToEndId'
+                ExplicitWidth = 58
               end
               object Button6: TButton
                 AlignWithMargins = True
@@ -2107,6 +2108,21 @@ object FrmMain: TFrmMain
     object tbs_Pix: TTabSheet
       Caption = 'tbs_Pix'
       ImageIndex = 2
+      object DBGrid1: TDBGrid
+        Left = 0
+        Top = 0
+        Width = 1004
+        Height = 474
+        Align = alClient
+        DataSource = DataSource1
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Visible = False
+      end
     end
     object tbsQrcodeEstatico: TTabSheet
       Caption = 'tbsQrcodeEstatico'
@@ -2126,7 +2142,7 @@ object FrmMain: TFrmMain
     Padding.Right = 3
     Padding.Bottom = 3
     ParentBackground = False
-    TabOrder = 3
+    TabOrder = 2
     object SpeedButton3: TSpeedButton
       AlignWithMargins = True
       Left = 6

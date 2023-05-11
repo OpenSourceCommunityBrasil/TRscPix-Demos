@@ -63,7 +63,10 @@ uses
   , uRscPix.Variaveis
   , uRscPix.Tipos
   , uRscPix.Validations
-  , uRscPix.Classes, Vcl.DBGrids, Vcl.Mask
+  , uRscPix.Classes
+
+  , Vcl.DBGrids
+  , Vcl.Mask
 
 
 
@@ -1037,6 +1040,7 @@ begin
                   FDMemTable1.Post;
                 end;
               DBGrid1.Visible :=  True;
+              PageControl1.ActivePage :=  tbs_Pix;
             end;
         end;
     end
