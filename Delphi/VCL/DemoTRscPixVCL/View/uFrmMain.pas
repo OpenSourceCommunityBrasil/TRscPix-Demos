@@ -83,11 +83,8 @@ type
     edtDeveloperKey: TLabeledEdit;
     edtChavePix: TLabeledEdit;
     CbbTipoChavePix: TComboBox;
-    edtNomeRecebedore: TLabeledEdit;
     edtDuracaoMinutos: TSpinEdit;
     Label9: TLabel;
-    Label1: TLabel;
-    cbbTipoQRCode: TComboBox;
     btn_GerarCabranca: TButton;
     gb_Consulta_Periodo: TGroupBox;
     Label3: TLabel;
@@ -111,14 +108,12 @@ type
     Button4: TButton;
     Panel1: TPanel;
     BitBtn1: TBitBtn;
-    edtCidadeRecebedor: TLabeledEdit;
     btn_Cert: TSpeedButton;
     Open_Dialog: TOpenDialog;
     pnl_menu: TPanel;
     pnl_FuncCobranca: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
-    Panel4: TPanel;
     Panel5: TPanel;
     Label8: TLabel;
     Panel6: TPanel;
@@ -187,11 +182,29 @@ type
     Label7: TLabel;
     lbl_Ambiente: TLabel;
     Label25: TLabel;
-    GroupBox5: TGroupBox;
     GroupBox6: TGroupBox;
     tbsQrcodeEstatico: TTabSheet;
     SpeedButton5: TSpeedButton;
     RscPix1: TRscPix;
+    Panel14: TPanel;
+    Panel17: TPanel;
+    Panel18: TPanel;
+    Panel19: TPanel;
+    Label33: TLabel;
+    mm_Est_Payload: TMemo;
+    Panel21: TPanel;
+    Label34: TLabel;
+    Img_Est_QrCode: TImage;
+    Panel22: TPanel;
+    GroupBox9: TGroupBox;
+    Label35: TLabel;
+    cbbx_Est_Tipochave: TComboBox;
+    edt_Est_ChavePix: TLabeledEdit;
+    edt_Est_cidadebeneficiario: TLabeledEdit;
+    edt_Est_nomebeneficiario: TLabeledEdit;
+    edt_Est_Valor: TLabeledEdit;
+    btn_gerarQrCodeEstatico: TButton;
+    Panel15: TPanel;
     procedure btn_GerarCabrancaClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
@@ -237,6 +250,9 @@ type
     procedure PageControl1Change(Sender: TObject);
     procedure CbbTipoAmbienteChange(Sender: TObject);
     procedure SpeedButton5Click(Sender: TObject);
+    procedure btn_gerarQrCodeEstaticoClick(Sender: TObject);
+    procedure RscPix1QrCodeEstatico(Sender: TObject;
+      const RespCobPut: TRespCobPut; Erro: string);
   private
     cQrCode,
     cFantasia  : String;
@@ -324,6 +340,34 @@ procedure TFrmMain.btn_GerarCabrancaClick(Sender: TObject);
 begin
   SetConfigPixObrig(RscPix1);
   RscPix1.CriarCobranca(StrToFloatDef(edtValorPix.Text, 0), edtTXID.Text, edtMsgPix.Text);
+end;
+
+procedure TFrmMain.btn_gerarQrCodeEstaticoClick(Sender: TObject);
+begin
+  LimparDados;
+
+  if FileExists(PathLogo) then
+    Img_Est_QrCode.Picture.LoadFromFile(PathLogo);
+
+    RscPix1.TitularPix.TipoChavePix                 :=  TTipoChavePIX(cbbx_Est_Tipochave.ItemIndex);
+    RscPix1.TitularPix.ChavePIX                     :=  edt_Est_ChavePix.Text;
+//    RscPix1.TitularPix.TipoQRCode                   :=  TTipoQrCode.tqDinamico;
+//    RscPix1.TitularPix.DuracaoMinutos               :=  edtDuracaoMinutos.Value;
+//    RscPix1.TitularPix.NomeTitularConta             :=  edtNomeRecebedore.Text;
+//    RscPix1.TitularPix.CidadeTitularConta           :=  edtCidadeRecebedor.Text;
+//    RscPix1.Seguranca.CertFile                      :=  edtCertificado.Text;
+//    RscPix1.Seguranca.CertKeyFile                   :=  edtSenhaCertificado.Text;
+//    RscPix1.Seguranca.UseSSL                        :=  True;
+//    RscPix1.Seguranca.SSLVersions                   :=  [sslvTLSv1, sslvTLSv1_1, sslvTLSv1_2, sslvSSLv23];
+//    RscPix1.Seguranca.VerifyCert                    :=  True;
+//    RscPix1.Seguranca.SSLMethod                     :=  sslvSSLv3;
+//    RscPix1.Developer.Application_key               :=  edtDeveloperKey.Text;
+//    RscPix1.Developer.Client_ID                     :=  edtClientID.Text;
+//    RscPix1.Developer.Client_Secret                 :=  edtClientSecreat.Text;
+//    RscPix1.PSP.TipoPsp                             :=  TTipoPSP(CbbPSP.ItemIndex);
+//    RscPix1.PSP.TipoPspAmbiente                     :=  TTipoAmbiente(CbbTipoAmbiente.ItemIndex);
+
+//  RscPix1.CriarQrCodeEstatico(StrToFloatDef(edt_Est_Valor.Text, 0), edt_Est_nomebeneficiario.Text, edt_Est_cidadebeneficiario.Text);
 end;
 
 procedure TFrmMain.btn_KeyCertClick(Sender: TObject);
@@ -482,10 +526,10 @@ begin
 
     TRscPix(Sender).TitularPix.TipoChavePix                 :=  TTipoChavePIX(CbbTipoChavePix.ItemIndex);
     TRscPix(Sender).TitularPix.ChavePIX                     :=  edtChavePix.Text;
-    TRscPix(Sender).TitularPix.TipoQRCode                   :=  TTipoQrCode(cbbTipoQRCode.ItemIndex);
+//    TRscPix(Sender).TitularPix.TipoQRCode                   :=  TTipoQrCode.tqDinamico;
     TRscPix(Sender).TitularPix.DuracaoMinutos               :=  edtDuracaoMinutos.Value;
-    TRscPix(Sender).TitularPix.NomeTitularConta             :=  edtNomeRecebedore.Text;
-    TRscPix(Sender).TitularPix.CidadeTitularConta           :=  edtCidadeRecebedor.Text;
+//    TRscPix(Sender).TitularPix.NomeTitularConta             :=  edtNomeRecebedore.Text;
+//    TRscPix(Sender).TitularPix.CidadeTitularConta           :=  edtCidadeRecebedor.Text;
     TRscPix(Sender).Seguranca.CertFile                      :=  edtCertificado.Text;
     TRscPix(Sender).Seguranca.CertKeyFile                   :=  edtSenhaCertificado.Text;
     TRscPix(Sender).Seguranca.UseSSL                        :=  True;
@@ -548,6 +592,20 @@ end;
 procedure TFrmMain.CbbPSPChange(Sender: TObject);
 begin
   lblPsp.Caption  :=  CbbPSP.Items[CbbPSP.ItemIndex];
+
+  case TTipoPSP(GetEnumValue(TypeInfo(TTipoPSP), lblPsp.Caption)) of
+    pspBancoDoBrasil:
+      begin
+        edtDeveloperKey.Enabled :=  True;
+      end;
+  else
+    begin
+      edtDeveloperKey.Enabled :=  False;
+    end;
+  end;
+
+
+
 end;
 
 procedure TFrmMain.CbbTipoAmbienteChange(Sender: TObject);
@@ -618,21 +676,20 @@ begin
   PathConfigIni :=  ExtractFilePath(ParamStr(0)) + 'Config.ini';
   CriarConfigIni;
 
-  cbbTipoQRCode.Clear;
-
-  For Q := Low(TTipoQrCode) to High(TTipoQrCode) do
-     cbbTipoQRCode.Items.Add( GetEnumName(TypeInfo(TTipoQrCode), integer(Q)));
-
-  if cbbTipoQRCode.Items.Count > 0 then
-    cbbTipoQRCode.ItemIndex :=  0;
-
   CbbTipoChavePix.Clear;
+  cbbx_Est_Tipochave.Clear;
 
   For R := Low(TTipoChavePIX) to High(TTipoChavePIX) do
-     CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(R)));
+    begin
+      CbbTipoChavePix.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(R)));
+      cbbx_Est_Tipochave.Items.Add( GetEnumName(TypeInfo(TTipoChavePIX), integer(R)));
+    end;
 
   if CbbTipoChavePix.Items.Count > 0 then
-    CbbTipoChavePix.ItemIndex :=  0;
+    begin
+      CbbTipoChavePix.ItemIndex :=  0;
+      cbbx_Est_Tipochave.ItemIndex :=  0;
+    end;
 
   CbbPSP.Clear;
 
@@ -688,9 +745,8 @@ begin
       ConfigIni.WriteString('PIX', 'Developer Application Key', edtDeveloperKey.Text);
       ConfigIni.WriteString('PIX', 'Chave PIX', edtChavePix.Text);
       ConfigIni.WriteInteger('PIX', 'Tipo Chave PIX', CbbTipoChavePix.ItemIndex);
-      ConfigIni.WriteInteger('PIX', 'Tipo QRCode', cbbTipoQRCode.ItemIndex);
-      ConfigIni.WriteString('PIX', 'Cidade Recebedor', edtCidadeRecebedor.Text);
-      ConfigIni.WriteString('PIX', 'Nome Recebedor', edtNomeRecebedore.Text);
+//      ConfigIni.WriteString('PIX', 'Cidade Recebedor', edtCidadeRecebedor.Text);
+//      ConfigIni.WriteString('PIX', 'Nome Recebedor', edtNomeRecebedore.Text);
       ConfigIni.WriteInteger('PIX', 'PSP', CbbPSP.ItemIndex);
       ConfigIni.WriteInteger('PIX', 'Tipo Ambiente', CbbTipoAmbiente.ItemIndex);
     finally
@@ -730,17 +786,17 @@ begin
   try
     ConfigIni := TIniFile.Create(PathConfigIni);
     try
-      edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', 'Dx');
+      edtCertificado.Text       :=  ConfigIni.ReadString('PIX', 'Certificado', '');
       edtSenhaCertificado.Text  :=  ConfigIni.ReadString('PIX', 'Senha Certificado', '');
       edtClientID.Text          :=  ConfigIni.ReadString('PIX', 'Client ID', '');
       edtClientSecreat.Text     :=  ConfigIni.ReadString('PIX', 'Client Secreat', ''+
                                                                                   '');
       edtDeveloperKey.Text      :=  ConfigIni.ReadString('PIX', 'Developer Application Key', '');
-      edtChavePix.Text          :=  ConfigIni.ReadString('PIX', 'Chave PIX', 'atenassoftwares');
+      edtChavePix.Text          :=  ConfigIni.ReadString('PIX', 'Chave PIX', '');
       CbbTipoChavePix.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Chave PIX', 0);
-      cbbTipoQRCode.ItemIndex   :=  ConfigIni.ReadInteger('PIX', 'Tipo QRCode', 0);
-      edtCidadeRecebedor.Text   :=  ConfigIni.ReadString('PIX', 'Cidade Recebedor', 'Sumaré');
-      edtNomeRecebedore.Text    :=  ConfigIni.ReadString('PIX', 'Nome Recebedor', 'Marcelo Ferreira');
+//      cbbTipoQRCode.ItemIndex   :=  ConfigIni.ReadInteger('PIX', 'Tipo QRCode', 0);
+//      edtCidadeRecebedor.Text   :=  ConfigIni.ReadString('PIX', 'Cidade Recebedor', '');
+//      edtNomeRecebedore.Text    :=  ConfigIni.ReadString('PIX', 'Nome Recebedor', '');
       CbbPSP.ItemIndex          :=  ConfigIni.ReadInteger('PIX', 'PSP', 0);
       CbbTipoAmbiente.ItemIndex :=  ConfigIni.ReadInteger('PIX', 'Tipo Ambiente', 0);
 
@@ -1074,6 +1130,54 @@ begin
         begin
           lblStatus.Caption := 'Situação: ' + RespPixPut.Status;
         end;
+    end;
+end;
+
+procedure TFrmMain.RscPix1QrCodeEstatico(Sender: TObject;
+  const RespCobPut: TRespCobPut; Erro: string);
+var
+  cValor : String ;
+begin
+  if (Erro = '') then
+    begin
+      lblStatus.Caption := 'Situação: ' +  RespCobPut.Status;
+      if (RespCobPut.Status <> 'NAO_CRIADO') then
+        begin
+          cValor := StringReplace(RespCobPut.valor.original, '.', ',', [rfReplaceAll]);
+          Label15.Caption := 'Valor Retornado: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
+
+          if RespCobPut.textoImagemQRcode <> '' then
+            begin
+              mm_Est_Payload.Text  :=  RespCobPut.textoImagemQRcode;
+              QRCodeWin(Img_Est_QrCode, RespCobPut.textoImagemQRcode);
+              cQrCode := RespCobPut.textoImagemQRcode;
+            end
+          else
+            begin
+              if RespCobPut.pixCopiaECola <> '' then
+                begin
+                  mm_Est_Payload.Text  :=  RespCobPut.pixCopiaECola;
+                  QRCodeWin(Img_Est_QrCode, RespCobPut.pixCopiaECola);
+                  cQrCode := RespCobPut.pixCopiaECola;
+                end
+              else
+                begin
+                  mm_Est_Payload.Text  :=  RespCobPut.location;
+                  QRCodeWin(Img_Est_QrCode, RespCobPut.location);
+                  cQrCode := RespCobPut.location;
+                end;
+            end;
+
+//          if (RespCobPut.loc <> nil)  and (RespCobPut.pixCopiaECola = '') then
+//            begin
+//              TRscPix(Sender).GerarQRCodelocation(RespCobPut.loc.id);
+//            end;
+        end;
+    end
+  else
+    begin
+      lblStatus.Caption  := 'Situação: '  + Erro;
+      MessageDlg('Erro ao Criar Cobrança' + #13 + Erro, TMsgDlgType.mtError, [TMsgDlgBtn.mbOK], 0);
     end;
 end;
 
