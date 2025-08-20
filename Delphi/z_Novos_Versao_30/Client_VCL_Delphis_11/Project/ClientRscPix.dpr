@@ -3,7 +3,7 @@ program ClientRscPix;
 uses
   Forms,
   View.FrmMain in '..\Source\View\View.FrmMain.pas' {FrmMain},
-  client.Utils in '..\Source\client.Utils.pas';
+  client.Utils in '..\Comum\client.Utils.pas';
 
 {$R *.res}
 

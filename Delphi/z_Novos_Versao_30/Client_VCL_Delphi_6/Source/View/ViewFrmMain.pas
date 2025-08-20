@@ -99,6 +99,7 @@ type
     Image1: TImage;
     Image2: TImage;
     lblCompVersao: TLabel;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure cbbx_PSPChange(Sender: TObject);
     procedure btn_NovoTokenClick(Sender: TObject);

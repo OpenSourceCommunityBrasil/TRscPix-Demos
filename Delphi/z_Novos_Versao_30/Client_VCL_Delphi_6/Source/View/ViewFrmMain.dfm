@@ -1,34 +1,31 @@
 object FrmMain: TFrmMain
   Left = 356
   Top = 164
-  Width = 853
-  Height = 609
   Caption = 'RscPix - By: Roniery Santos Cardoso  - 92 4141-2737'
+  ClientHeight = 570
+  ClientWidth = 837
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 0
     Top = 41
     Width = 837
-    Height = 530
+    Height = 529
     ActivePage = tbs_Cob
     Align = alClient
-    TabIndex = 2
     TabOrder = 0
     object TbsConfig: TTabSheet
       Caption = 'Configura'#231#227'o'
       object Panel2: TPanel
         Left = 0
-        Top = 453
+        Top = 452
         Width = 829
         Height = 49
         Align = alBottom
@@ -79,7 +76,6 @@ object FrmMain: TFrmMain
           Top = 13
           Width = 145
           Height = 21
-          ItemHeight = 13
           TabOrder = 0
           Text = 'cbbx_PSP'
           OnChange = cbbx_PSPChange
@@ -239,7 +235,6 @@ object FrmMain: TFrmMain
           Top = 16
           Width = 145
           Height = 21
-          ItemHeight = 13
           TabOrder = 0
           Text = 'cbbx_PSP'
           OnChange = cbbx_PSPChange
@@ -249,7 +244,6 @@ object FrmMain: TFrmMain
           Top = 16
           Width = 145
           Height = 21
-          ItemHeight = 13
           TabOrder = 1
           Text = 'ComboBox1'
           OnChange = cbbx_AmbienteChange
@@ -263,7 +257,7 @@ object FrmMain: TFrmMain
         Left = 0
         Top = 49
         Width = 829
-        Height = 453
+        Height = 452
         Align = alClient
         Lines.Strings = (
           'Memo1')
@@ -296,7 +290,7 @@ object FrmMain: TFrmMain
         Left = 0
         Top = 0
         Width = 829
-        Height = 502
+        Height = 501
         Align = alClient
         BevelOuter = bvNone
         Color = clWhite
@@ -305,7 +299,7 @@ object FrmMain: TFrmMain
           Left = 0
           Top = 0
           Width = 313
-          Height = 502
+          Height = 501
           Align = alLeft
           BevelOuter = bvNone
           Color = 15592152
@@ -460,12 +454,20 @@ object FrmMain: TFrmMain
               TabOrder = 1
             end
           end
+          object Button1: TButton
+            Left = 112
+            Top = 448
+            Width = 75
+            Height = 25
+            Caption = 'Button1'
+            TabOrder = 3
+          end
         end
         object Panel5: TPanel
           Left = 313
           Top = 0
           Width = 516
-          Height = 502
+          Height = 501
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
@@ -510,7 +512,7 @@ object FrmMain: TFrmMain
             Left = 0
             Top = 57
             Width = 516
-            Height = 263
+            Height = 262
             Align = alClient
             Color = clWhite
             TabOrder = 1
@@ -518,7 +520,7 @@ object FrmMain: TFrmMain
               Left = 1
               Top = 38
               Width = 514
-              Height = 224
+              Height = 223
               Align = alClient
               Center = True
               Picture.Data = {
@@ -4276,6 +4278,8 @@ object FrmMain: TFrmMain
                 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
                 FFFF}
               Proportional = True
+              ExplicitLeft = -1
+              ExplicitTop = 33
             end
             object Label17: TLabel
               Left = 1
@@ -4291,11 +4295,12 @@ object FrmMain: TFrmMain
               Font.Name = 'Segoe UI'
               Font.Style = []
               ParentFont = False
+              ExplicitWidth = 92
             end
           end
           object Panel8: TPanel
             Left = 0
-            Top = 320
+            Top = 319
             Width = 516
             Height = 182
             Align = alBottom
@@ -4308,6 +4313,7 @@ object FrmMain: TFrmMain
               Height = 13
               Align = alTop
               Caption = 'Copiar e Colar Payload'
+              ExplicitWidth = 107
             end
             object lbl_CobValorPago: TLabel
               Left = 0
@@ -4322,6 +4328,7 @@ object FrmMain: TFrmMain
               Font.Name = 'Segoe UI'
               Font.Style = []
               ParentFont = False
+              ExplicitWidth = 77
             end
             object mm_CobPayload: TMemo
               Left = 0
@@ -4332,6 +4339,8 @@ object FrmMain: TFrmMain
               BevelOuter = bvNone
               BorderStyle = bsNone
               TabOrder = 0
+              ExplicitLeft = -1
+              ExplicitTop = 7
             end
             object mm_Cob_Status: TMemo
               Left = 0
@@ -4371,6 +4380,7 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 21
     end
     object lbl_Psp: TLabel
       Left = 46
@@ -4386,6 +4396,7 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 21
     end
     object Label22: TLabel
       Left = 88
@@ -4401,6 +4412,7 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 21
     end
     object lbl_ambiente: TLabel
       Left = 174
@@ -4416,6 +4428,7 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitHeight = 21
     end
     object Image1: TImage
       Left = 796
@@ -8704,6 +8717,9 @@ object FrmMain: TFrmMain
       Font.Style = []
       ParentFont = False
       Layout = tlCenter
+      ExplicitLeft = 713
+      ExplicitWidth = 42
+      ExplicitHeight = 21
     end
   end
   object RscPix1: TRscPix

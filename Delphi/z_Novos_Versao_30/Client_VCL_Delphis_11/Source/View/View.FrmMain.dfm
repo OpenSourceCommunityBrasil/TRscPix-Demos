@@ -19,7 +19,7 @@ object FrmMain: TFrmMain
     Top = 41
     Width = 984
     Height = 581
-    ActivePage = TbsConfig
+    ActivePage = tbs_ListaPixRecebidos
     Align = alClient
     TabOrder = 0
     object TbsConfig: TTabSheet
@@ -4271,7 +4271,7 @@ object FrmMain: TFrmMain
             object Label17: TLabel
               Left = 1
               Top = 1
-              Width = 388
+              Width = 92
               Height = 37
               Align = alTop
               Alignment = taCenter
@@ -4282,7 +4282,6 @@ object FrmMain: TFrmMain
               Font.Name = 'Segoe UI'
               Font.Style = []
               ParentFont = False
-              ExplicitWidth = 92
             end
           end
           object Panel8: TPanel
@@ -4296,16 +4295,15 @@ object FrmMain: TFrmMain
             object Label18: TLabel
               Left = 0
               Top = 0
-              Width = 663
+              Width = 107
               Height = 13
               Align = alTop
               Caption = 'Copiar e Colar Payload'
-              ExplicitWidth = 107
             end
             object lbl_CobValorPago: TLabel
               Left = 0
               Top = 65
-              Width = 663
+              Width = 77
               Height = 21
               Align = alTop
               Caption = 'Valor Pago:'
@@ -4315,7 +4313,6 @@ object FrmMain: TFrmMain
               Font.Name = 'Segoe UI'
               Font.Style = []
               ParentFont = False
-              ExplicitWidth = 77
             end
             object mm_CobPayload: TMemo
               Left = 0
@@ -8983,10 +8980,20 @@ object FrmMain: TFrmMain
     PSP.PspAmbiente = taSandBox
     OnToken = RscPix1Token
     OnCobCriar = RscPix1CobCriar
-    OnCobConsultar = RscPix1CobConsultar
+    OnCobTxId = RscPix1CobTxId
+    OnCobListar = RscPix1CobListar
     OnCobCancelar = RscPix1CobCancelar
-    OnPixConsultarPix = RscPix1PixConsultarPix
-    OnPixDevolucao = RscPix1PixDevolucao
+    OnLocationCriar = RscPix1LocationCriar
+    OnLocationId = RscPix1LocationId
+    OnLocationIdtoQrCode = RscPix1LocationIdtoQrCode
+    OnLocationListarCadastrados = RscPix1LocationListarCadastrados
+    OnLocationDesvincularTxId = RscPix1LocationDesvincularTxId
+    OnPixGetEndToEndId = RscPix1PixGetEndToEndId
+    OnPixListaRecebidos = RscPix1PixListaRecebidos
+    OnWebhookListar = RscPix1WebhookListar
+    OnWebhookGet = RscPix1WebhookGet
+    OnWebhookPut = RscPix1WebhookPut
+    OnWebhookDelete = RscPix1WebhookDelete
     Left = 388
     Top = 8
   end

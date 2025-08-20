@@ -10,8 +10,8 @@ uses
   , IniFiles
   , TypInfo
   , RscPix
-  , RscPix.Tipos
-  , RscPix.Token
+  , RscPixTipos
+  , RscPixToken
 
   , client.Utils, DB, DBClient, Grids, DBGrids
 
@@ -153,8 +153,6 @@ type
     procedure Image1Click(Sender: TObject);
     procedure Image2Click(Sender: TObject);
     procedure btn_Pix_ConsultarClick(Sender: TObject);
-    procedure RscPix1PixConsultarPix(Sender: TObject;
-      const RespPixGet: TRespPixGet; Erro: String);
     procedure Button1Click(Sender: TObject);
     procedure btn_Pix_Solicitar_EstornoClick(Sender: TObject);
     procedure RscPix1PixDevolucao(Sender: TObject;
@@ -162,6 +160,32 @@ type
     procedure btn_Pix_Consultar_EstornoClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btn_pix_ConsultarListaClick(Sender: TObject);
+    procedure RscPix1CobListar(Sender: TObject; const Response: TRespCobListar;
+      Erro: string);
+    procedure RscPix1CobTxId(Sender: TObject; const Response: TRespCobGet;
+      Erro: string);
+    procedure RscPix1LocationCriar(Sender: TObject;
+      const Response: TRespLocPost; Erro: string);
+    procedure RscPix1LocationDesvincularTxId(Sender: TObject;
+      const Response: TRespLocDelete; Erro: string);
+    procedure RscPix1LocationId(Sender: TObject; const Response: TRespLocGet;
+      Erro: string);
+    procedure RscPix1LocationIdtoQrCode(Sender: TObject;
+      const Response: TRespLocGetIdQrcode; Erro: string);
+    procedure RscPix1LocationListarCadastrados(Sender: TObject;
+      const Response: TRespLocList; Erro: string);
+    procedure RscPix1PixGetEndToEndId(Sender: TObject;
+      const Response: TRespPixGetEndToEndId; Erro: string);
+    procedure RscPix1PixListaRecebidos(Sender: TObject;
+      const Response: TRespPixListaRecebidos; Erro: string);
+    procedure RscPix1WebhookDelete(Sender: TObject;
+      const Response: TRespWebhookPutDelete; Erro: string);
+    procedure RscPix1WebhookGet(Sender: TObject;
+      const Response: TRespWebhookGet; Erro: string);
+    procedure RscPix1WebhookListar(Sender: TObject;
+      const Response: TRespWebhookListar; Erro: string);
+    procedure RscPix1WebhookPut(Sender: TObject;
+      const Response: TRespWebhookPutDelete; Erro: string);
   private
     FPath : string;
     FDstListPixRecebidos: TClientDataSet;
@@ -223,7 +247,7 @@ const
 
 implementation
 
-uses RscPix.PixParams, RscPix.Pagador;
+
 
 {$R *.dfm}
 
@@ -354,21 +378,21 @@ procedure TFrmMain.CriarCobranca;
 begin
   LimparRespostas;
   CarregarConfig;
-  RscPix1.CriarCobranca(StrToFloatDef(edt_cob_valor.Text, 0), edt_cob_Txid.Text, edt_cob_mensagem.Text);
+  RscPix1.CobCriar(StrToFloatDef(edt_cob_valor.Text, 0), edt_cob_Txid.Text, edt_cob_mensagem.Text);
 end;
 
 procedure TFrmMain.ConsultarCobranca;
 begin
   LimparRespostas;
   CarregarConfig;
-  RscPix1.ConsultarCobranca(edt_cob_Txid.Text);
+  RscPix1.CobTxId(edt_cob_Txid.Text);
 end;
 
 procedure TFrmMain.CancelarCobranca;
 begin
   LimparRespostas;
   CarregarConfig;
-  RscPix1.CancelarCobranca(edt_cob_Txid.Text);
+  RscPix1.CobCancelar(edt_cob_Txid.Text);
 end;
 
 procedure TFrmMain.ConsultarPix;
@@ -379,7 +403,7 @@ begin
   LimparRespostas;
   CarregarConfig;
   edt_cob_Pix_endtoEndId.Text :=  end2id;
-  RscPix1.ConsultarPixRecebido(edt_cob_Pix_endtoEndId.Text);
+  RscPix1.PixEndToEndId(edt_cob_Pix_endtoEndId.Text);
 end;
 
 procedure TFrmMain.SolicitarDevolucaoPix;
@@ -415,7 +439,7 @@ begin
   edt_cob_Pix_endtoEndId.Text :=  end2id;
   edt_Pix_TxIdDev.Text :=  txiddev;
   edt_cob_Pix_Pago.Text :=  FloatToStr(valor);
-  RscPix1.SolicitarDevolucaoPix(edt_cob_Pix_endtoEndId.Text, edt_Pix_TxIdDev.Text, StrToFloat(edt_cob_Pix_Pago.Text));
+  RscPix1.PixDevolucaoSolicitar(edt_cob_Pix_endtoEndId.Text, edt_Pix_TxIdDev.Text, StrToFloat(edt_cob_Pix_Pago.Text));
 end;
 
 procedure TFrmMain.ConsultarDevolucaoPix;
@@ -442,14 +466,23 @@ begin
   CarregarConfig;
   edt_cob_Pix_endtoEndId.Text :=  end2id;
   edt_Pix_TxIdDev.Text :=  txiddev;
-  RscPix1.ConsultarDevolucaoPix(edt_cob_Pix_endtoEndId.Text, edt_Pix_TxIdDev.Text);
+  RscPix1.PixDevolucaoConsultar(edt_cob_Pix_endtoEndId.Text, edt_Pix_TxIdDev.Text);
 end;
 
 procedure TFrmMain.ConsultarListaPixsRecebidos;
 begin
   CarregarConfig;
-  RscPix1.ConsultarListPixsRecebPeriodo(StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)) ,
-                                        StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)), StrToIntDef(edt_PagPixs.Text, 0));
+  RscPix1.PixListar(
+    StrToDateTime(DateToStr(dtp_Data_Inicial.Date) + TimeToStr(dtp_Hora_Inicial.Time)),
+    StrToDateTime(DateToStr(dtp_Data_Final.Date) + TimeToStr(dtp_Hora_Final.Time)),
+    '',
+    False,
+    False,
+    '',
+    '',
+    StrToIntDef(edt_PagPixs.Text, 0),
+    StrToIntDef(edt_ItensPagPixs.Text, 0)
+    );
 end;
 
 procedure TFrmMain.FormCreate(Sender: TObject);
@@ -614,6 +647,30 @@ begin
     end;
 end;
 
+procedure TFrmMain.RscPix1WebhookDelete(Sender: TObject;
+  const Response: TRespWebhookPutDelete; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1WebhookGet(Sender: TObject;
+  const Response: TRespWebhookGet; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1WebhookListar(Sender: TObject;
+  const Response: TRespWebhookListar; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1WebhookPut(Sender: TObject;
+  const Response: TRespWebhookPutDelete; Erro: string);
+begin
+//novo
+end;
+
 procedure TFrmMain.RscPix1CobCancelar(Sender: TObject;
   const RespCobPatch: TRespCobPatch; Erro: String);
 begin
@@ -641,23 +698,15 @@ begin
           cValor := StringReplace(RespCobPut.valor.original, '.', ',', [rfReplaceAll]);
           lbl_CobValorPago.Caption := 'Valor á Pagar: R$ '+FormatFLoat('#0.00',StrToCurr(cValor));
 
-          if RespCobPut.textoImagemQRcode <> '' then
+          if RespCobPut.pixCopiaECola <> '' then
             begin
-              mm_CobPayload.Text  :=  RespCobPut.textoImagemQRcode;
-              QRCodeWin(imgQRCODE, RespCobPut.textoImagemQRcode);
+              mm_CobPayload.Text  :=  RespCobPut.pixCopiaECola;
+              QRCodeWin(imgQRCODE, RespCobPut.pixCopiaECola);
             end
           else
             begin
-              if RespCobPut.pixCopiaECola <> '' then
-                begin
-                  mm_CobPayload.Text  :=  RespCobPut.pixCopiaECola;
-                  QRCodeWin(imgQRCODE, RespCobPut.pixCopiaECola);
-                end
-              else
-                begin
-                  mm_CobPayload.Text  :=  RespCobPut.location;
-                  QRCodeWin(imgQRCODE, RespCobPut.location);
-                end;
+              mm_CobPayload.Text  :=  RespCobPut.location;
+              QRCodeWin(imgQRCODE, RespCobPut.location);
             end;
         end;
     end
@@ -666,6 +715,186 @@ begin
       mm_Cob_Status.text  := 'Situação: '  + Erro;
       MessageDlg('Erro ao Criar Cobrança' + #13 + Erro, mtError, [mbOK], 0);
     end;
+end;
+
+procedure TFrmMain.RscPix1CobListar(Sender: TObject;
+  const Response: TRespCobListar; Erro: string);
+var
+  I:  integer;
+begin
+//  if (Erro = '') then
+//    begin
+//      if (Response.Status = 'DEVOLVIDO') then
+//        begin
+//          mm_Cob_Status.Text := 'Situação: ' + Response.Status  + sLineBreak
+//                              + ' - motivo: '  + Trim(Response.pix[0].devolucoes[0].motivo)  + sLineBreak
+//                              + ' - rtrId: ' + Trim(Response.pix[0].devolucoes[0].rtrId) + sLineBreak
+//                              + ' - valor: '  + FormatFloat('#0.00', Response.pix[0].valor);
+//        end
+//      else
+//        begin
+//          mm_Cob_Status.Text := 'Situação: ' +  Response.status;
+//
+//          if  Response.pix.Count = 0 then
+//            begin
+//              edt_cob_Txid.Text             :=  Response.txid;
+//              edt_cob_valor.Text            :=  FloatToStr(Response.pix[0].valor);
+//              edt_cob_mensagemPagador.Text  :=  Response.pix[0].infoPagador;
+//
+//              if Response.pix[0].pagador <> nil then
+//                begin
+//                  edt_cob_nomePagador.Text  :=  Response.pix[0].pagador.nome;
+//
+//                  if Response.pix[0].Pagador.cpf <> '' then
+//                    edt_cob_cpfcnpjPagador.Text   :=  Response.pix[0].Pagador.cpf
+//                  else
+//                    edt_cob_cpfcnpjPagador.Text   :=  Response.pix[0].Pagador.cnpj;
+//                end;
+//
+//            end
+//          else
+//            begin
+//              edt_PagPixs.Text            :=  IntToStr(Response.parametros.paginacao.paginaAtual);
+//              edt_QtdPagPixs.Text         :=  IntToStr(Response.parametros.paginacao.quantidadeDePaginas);
+//              edt_ItensPagPixs.Text       :=  IntToStr(Response.parametros.paginacao.itensPorPagina);
+//              edt_TotalItensPagPixs.Text  :=  IntToStr(Response.parametros.paginacao.quantidadeTotalDeItens);
+//
+//              CreateFieldsDataSet;
+//              for i := 0 to Response.pix.Count - 1 do
+//                begin
+//                  FDstListPixRecebidos.Append;
+//
+//                  if Response.pix[i].pagador <> nil then
+//                    begin
+//                      if Response.pix[i].pagador.cpf = EmptyStr then
+//                        FDstListPixRecebidos.FieldByName('cpfcnpjpagador').AsString  :=  Response.pix[i].pagador.cnpj
+//                      else
+//                        FDstListPixRecebidos.FieldByName('cpfcnpjpagador').AsString  :=  Response.pix[i].pagador.cpf;
+//
+//                      FDstListPixRecebidos.FieldByName('nomePagador').AsString    :=  Response.pix[i].pagador.nome;
+//                    end;
+//
+//
+//                  FDstListPixRecebidos.FieldByName('inforpagador').AsString   :=  Response.pix[i].infoPagador;
+//                  FDstListPixRecebidos.FieldByName('endtoebdid').AsString     :=  Response.pix[i].endToEndId;
+//                  FDstListPixRecebidos.FieldByName('txid').AsString           :=  Response.pix[i].TxId;
+//                  FDstListPixRecebidos.FieldByName('valor').AsFloat           :=  Response.pix[i].valor;
+////                  FDstListPixRecebidos.FieldByName('horario').AsString        :=  Response.pix[i].horario;
+//                  FDstListPixRecebidos.Post;
+//                end;
+//            end;
+//        end;
+//    end
+//  else
+//    begin
+//      mm_Cob_Status.Text  := 'Situação: '  + Erro;
+//      MessageDlg('Erro ao Consultar PIX' + #13 + Erro, mtError, [mbOK], 0);
+//    end;
+end;
+
+procedure TFrmMain.RscPix1CobTxId(Sender: TObject; const Response: TRespCobGet;
+  Erro: string);
+var
+  I:  integer;
+begin
+  if (Erro = '') then
+    begin
+      if (Response.Status = 'DEVOLVIDO') then
+        begin
+          mm_Cob_Status.Text := 'Situação: ' + Response.Status  + sLineBreak
+                              + ' - motivo: '  + Trim(Response.pix[0].devolucoes[0].motivo)  + sLineBreak
+                              + ' - rtrId: ' + Trim(Response.pix[0].devolucoes[0].rtrId) + sLineBreak
+                              + ' - valor: '  + FormatFloat('#0.00', Response.pix[0].valor);
+        end
+      else
+        begin
+          mm_Cob_Status.Text := 'Situação: ' +  Response.status;
+
+          if  Response.pix.Count = 0 then
+            begin
+              edt_cob_Txid.Text             :=  Response.txid;
+              edt_cob_valor.Text            :=  FloatToStr(Response.pix[0].valor);
+              edt_cob_mensagemPagador.Text  :=  Response.pix[0].infoPagador;
+
+              if Response.pix[0].pagador <> nil then
+                begin
+                  edt_cob_nomePagador.Text  :=  Response.pix[0].pagador.nome;
+
+                  if Response.pix[0].Pagador.cpf <> '' then
+                    edt_cob_cpfcnpjPagador.Text   :=  Response.pix[0].Pagador.cpf
+                  else
+                    edt_cob_cpfcnpjPagador.Text   :=  Response.pix[0].Pagador.cnpj;
+                end;
+
+            end
+          else
+            begin
+//              edt_PagPixs.Text            :=  IntToStr(Response.parametros.paginacao.paginaAtual);
+//              edt_QtdPagPixs.Text         :=  IntToStr(Response.parametros.paginacao.quantidadeDePaginas);
+//              edt_ItensPagPixs.Text       :=  IntToStr(Response.parametros.paginacao.itensPorPagina);
+//              edt_TotalItensPagPixs.Text  :=  IntToStr(Response.parametros.paginacao.quantidadeTotalDeItens);
+//
+//              CreateFieldsDataSet;
+//              for i := 0 to Response.pix.Count - 1 do
+//                begin
+//                  FDstListPixRecebidos.Append;
+//
+//                  if Response.pix[i].pagador <> nil then
+//                    begin
+//                      if Response.pix[i].pagador.cpf = EmptyStr then
+//                        FDstListPixRecebidos.FieldByName('cpfcnpjpagador').AsString  :=  Response.pix[i].pagador.cnpj
+//                      else
+//                        FDstListPixRecebidos.FieldByName('cpfcnpjpagador').AsString  :=  Response.pix[i].pagador.cpf;
+//
+//                      FDstListPixRecebidos.FieldByName('nomePagador').AsString    :=  Response.pix[i].pagador.nome;
+//                    end;
+//
+//
+//                  FDstListPixRecebidos.FieldByName('inforpagador').AsString   :=  Response.pix[i].infoPagador;
+//                  FDstListPixRecebidos.FieldByName('endtoebdid').AsString     :=  Response.pix[i].endToEndId;
+//                  FDstListPixRecebidos.FieldByName('txid').AsString           :=  Response.pix[i].TxId;
+//                  FDstListPixRecebidos.FieldByName('valor').AsFloat           :=  Response.pix[i].valor;
+////                  FDstListPixRecebidos.FieldByName('horario').AsString        :=  Response.pix[i].horario;
+//                  FDstListPixRecebidos.Post;
+//                end;
+            end;
+        end;
+    end
+  else
+    begin
+//      mm_Cob_Status.Text  := 'Situação: '  + Erro;
+//      MessageDlg('Erro ao Consultar PIX' + #13 + Erro, mtError, [mbOK], 0);
+    end;
+end;
+
+procedure TFrmMain.RscPix1LocationCriar(Sender: TObject;
+  const Response: TRespLocPost; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1LocationDesvincularTxId(Sender: TObject;
+  const Response: TRespLocDelete; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1LocationId(Sender: TObject;
+  const Response: TRespLocGet; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1LocationIdtoQrCode(Sender: TObject;
+  const Response: TRespLocGetIdQrcode; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1LocationListarCadastrados(Sender: TObject;
+  const Response: TRespLocList; Erro: string);
+begin
+//novo
 end;
 
 procedure TFrmMain.RscPix1CobConsultar(Sender: TObject;
@@ -720,24 +949,24 @@ begin
 
           if RespCobGet.status = 'ATIVA' then
             begin
-              if RespCobGet.textoImagemQRcode <> '' then
-                begin
-                  mm_CobPayload.Text  :=  RespCobGet.textoImagemQRcode;
-                  QRCodeWin(imgQRCODE, RespCobGet.textoImagemQRcode);
-                end
-              else
-                begin
-                  if RespCobGet.pixCopiaECola <> '' then
-                    begin
-                      mm_CobPayload.Text  :=  RespCobGet.pixCopiaECola;
-                      QRCodeWin(imgQRCODE, RespCobGet.pixCopiaECola);
-                    end
-                  else
-                    begin
-                      mm_CobPayload.Text  :=  RespCobGet.location;
-                      QRCodeWin(imgQRCODE, RespCobGet.location);
-                    end;
-                end;
+//              if RespCobGet.textoImagemQRcode <> '' then
+//                begin
+//                  mm_CobPayload.Text  :=  RespCobGet.textoImagemQRcode;
+//                  QRCodeWin(imgQRCODE, RespCobGet.textoImagemQRcode);
+//                end
+//              else
+//                begin
+//                  if RespCobGet.pixCopiaECola <> '' then
+//                    begin
+//                      mm_CobPayload.Text  :=  RespCobGet.pixCopiaECola;
+//                      QRCodeWin(imgQRCODE, RespCobGet.pixCopiaECola);
+//                    end
+//                  else
+//                    begin
+//                      mm_CobPayload.Text  :=  RespCobGet.location;
+//                      QRCodeWin(imgQRCODE, RespCobGet.location);
+//                    end;
+//                end;
             end;
 
         end;
@@ -754,100 +983,6 @@ begin
   ConsultarPix;
 end;
 
-procedure TFrmMain.RscPix1PixConsultarPix(Sender: TObject;
-  const RespPixGet: TRespPixGet; Erro: String);
-var
-  I:  integer;
-begin
-  if (Erro = '') then
-    begin
-      if (RespPixGet.Status = 'DEVOLVIDO') then
-        begin
-          mm_Cob_Status.Text := 'Situação: ' + RespPixGet.Status  + sLineBreak
-                              + ' - motivo: '  + Trim(RespPixGet.motivo)  + sLineBreak
-                              + ' - rtrId: ' + Trim(RespPixGet.rtrId) + sLineBreak
-                              + ' - valor: '  + FormatFloat('#0.00', RespPixGet.valor);
-        end
-      else
-        begin
-          mm_Cob_Status.Text := 'Situação: ' +  'Não retorna Status somente dados';
-
-          if  RespPixGet.pix.Count = 0 then
-            begin
-              edt_cob_Txid.Text             :=  RespPixGet.txid;
-              edt_cob_valor.Text            :=  FloatToStr(RespPixGet.valor);
-              edt_cob_mensagemPagador.Text  :=  RespPixGet.infoPagador;
-
-//              edt_NomePagador.Text  :=  RespPixGet.Pagador.nome;
-//              if RespPixGet.Pagador.cpf <> '' then
-//                edt_DocPagador.Text   :=  RespPixGet.Pagador.cpf
-//              else
-//                edt_DocPagador.Text   :=  RespPixGet.Pagador.cnpj;
-
-
-              if RespPixGet.pagador <> nil then
-                begin
-                  edt_cob_nomePagador.Text  :=  RespPixGet.pagador.nome;
-
-                  if RespPixGet.Pagador.cpf <> '' then
-                    edt_cob_cpfcnpjPagador.Text   :=  RespPixGet.Pagador.cpf
-                  else
-                    edt_cob_cpfcnpjPagador.Text   :=  RespPixGet.Pagador.cnpj;
-                end
-              else
-                begin
-//                  if RespPixGet.devedor <> nil then
-//                    begin
-//                      edt_NomePagador.Text  :=  RespPixGet.devedor.nome;
-//
-//                      if RespPixGet.devedor.cpf <> '' then
-//                        edt_DocPagador.Text   :=  RespPixGet.devedor.cpf
-//                      else
-//                        edt_DocPagador.Text   :=  RespPixGet.devedor.cnpj;
-//                    end
-                end;
-
-            end
-          else
-            begin
-              edt_PagPixs.Text            :=  IntToStr(RespPixGet.parametros.paginacao.paginaAtual);
-              edt_QtdPagPixs.Text         :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeDePaginas);
-              edt_ItensPagPixs.Text       :=  IntToStr(RespPixGet.parametros.paginacao.itensPorPagina);
-              edt_TotalItensPagPixs.Text  :=  IntToStr(RespPixGet.parametros.paginacao.quantidadeTotalDeItens);
-
-              CreateFieldsDataSet;
-              for i := 0 to RespPixGet.pix.Count - 1 do
-                begin
-                  FDstListPixRecebidos.Append;
-
-                  if RespPixGet.pix[i].pagador <> nil then
-                    begin
-                      if RespPixGet.pix[i].pagador.cpf = EmptyStr then
-                        FDstListPixRecebidos.FieldByName('cpfcnpjpagador').AsString  :=  RespPixGet.pix[i].pagador.cnpj
-                      else
-                        FDstListPixRecebidos.FieldByName('cpfcnpjpagador').AsString  :=  RespPixGet.pix[i].pagador.cpf;
-
-                      FDstListPixRecebidos.FieldByName('nomePagador').AsString    :=  RespPixGet.pix[i].pagador.nome;
-                    end;
-
-
-                  FDstListPixRecebidos.FieldByName('inforpagador').AsString   :=  RespPixGet.pix[i].infoPagador;
-                  FDstListPixRecebidos.FieldByName('endtoebdid').AsString     :=  RespPixGet.pix[i].endToEndId;
-                  FDstListPixRecebidos.FieldByName('txid').AsString           :=  RespPixGet.pix[i].TxId;
-                  FDstListPixRecebidos.FieldByName('valor').AsFloat           :=  RespPixGet.pix[i].valor;
-//                  FDstListPixRecebidos.FieldByName('horario').AsString        :=  RespPixGet.pix[i].horario;
-                  FDstListPixRecebidos.Post;
-                end;
-            end;
-        end;
-    end
-  else
-    begin
-      mm_Cob_Status.Text  := 'Situação: '  + Erro;
-      MessageDlg('Erro ao Consultar PIX' + #13 + Erro, mtError, [mbOK], 0);
-    end;
-end;
-
 procedure TFrmMain.RscPix1PixDevolucao(Sender: TObject;
   const RespPixPut: TRespPixPut; Erro: String);
 begin
@@ -858,21 +993,33 @@ begin
     end
   else
     begin
-      mm_Cob_Status.Text  := 'Situação: '  + RespPixPut.status;
-      if (RespPixPut.Status = 'DEVOLVIDO') then
-        begin
-          mm_Cob_Status.Text := 'Situação: ' + RespPixPut.Status + sLineBreak
-                              + ' - motivo: '  + Trim(RespPixPut.motivo) + sLineBreak
-                              + ' - rtrId: ' + Trim(RespPixPut.rtrId) + sLineBreak
-                              + ' - valor: '  + FormatFloat('#0.00', RespPixPut.valor);
-        end
-      else
-        begin
-          mm_Cob_Status.Text := 'Situação: ' + RespPixPut.Status;
-        end;
+//      mm_Cob_Status.Text  := 'Situação: '  + RespPixPut.status;
+//      if (RespPixPut.Status = 'DEVOLVIDO') then
+//        begin
+//          mm_Cob_Status.Text := 'Situação: ' + RespPixPut.Status + sLineBreak
+//                              + ' - motivo: '  + Trim(RespPixPut.motivo) + sLineBreak
+//                              + ' - rtrId: ' + Trim(RespPixPut.rtrId) + sLineBreak
+//                              + ' - valor: '  + FormatFloat('#0.00', RespPixPut.valor);
+//        end
+//      else
+//        begin
+//          mm_Cob_Status.Text := 'Situação: ' + RespPixPut.Status;
+//        end;
     end;
 end;
 
+
+procedure TFrmMain.RscPix1PixGetEndToEndId(Sender: TObject;
+  const Response: TRespPixGetEndToEndId; Erro: string);
+begin
+//novo
+end;
+
+procedure TFrmMain.RscPix1PixListaRecebidos(Sender: TObject;
+  const Response: TRespPixListaRecebidos; Erro: string);
+begin
+//novo
+end;
 
 procedure TFrmMain.Button1Click(Sender: TObject);
 begin
